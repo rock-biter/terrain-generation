@@ -16,8 +16,8 @@ const scene = new THREE.Scene()
  * Terrain
  */
 const prng = alea('seed')
-const noise2D = createNoise2D(prng)
-const noise3D = createNoise3D(prng)
+const noise2D = createNoise2D()
+const noise3D = createNoise3D()
 
 const heightMap = textureLoader.load(heightMapSrc)
 const material = new THREE.MeshStandardMaterial({
@@ -37,7 +37,7 @@ const geometry = new THREE.BoxGeometry(1, 1, 1, 160, 160, 160)
 
 const position = geometry.getAttribute('position')
 console.log(position)
-let scale = 10
+let scale = 8
 
 let offset = 14
 
@@ -52,27 +52,29 @@ for (let i = 0; i < position.count; i++) {
 	const [x, y, z] = iPos
 
 	let down =
-		(noise(x * 0.01 * scale, z * 0.02 * scale, y * 0.05 * scale + offset) *
+		(noise(x * 0.03 * scale, z * 0.02 * scale, y * 0.01 * scale + offset) *
 			0.5 +
 			0.5) *
-		0.6
+		(8 / scale)
 	let low =
-		noise(x * 0.02 * scale, z * 0.03 * scale, y * 0.03 * scale + offset) * 0.5 +
+		noise(x * 0.02 * scale, z * 0.05 * scale, y * 0.02 * scale + offset) * 0.5 +
 		0.5
 	let base =
 		(noise(x * 0.2 * scale, z * 0.2 * scale, y * 0.2 * scale + offset) * 0.5 +
 			0.5) *
 		low *
 		low
+	let medium =
+		noise(x * 1.7 * scale, z * 1.7 * scale, y * 1.8 * scale + offset) *
+		0.5 *
+		base
 	let high =
 		Math.abs(noise(x * 2 * scale, z * 2 * scale, y * 2 * scale + offset)) *
-		3 *
+		4 *
 		base *
-		base
-	let medium =
-		noise(x * 1.5 * scale, z * 1.5 * scale, y * 1.5 * scale + offset) *
-		0.1 *
-		base
+		base *
+		low
+
 	// y += noise2D(x * 1.5, z * 1.5) * 3 * y * y
 	// y += (noise2D(x * 1.5, z * 1.5) * 0.5 + 0.5) * 0.2
 
